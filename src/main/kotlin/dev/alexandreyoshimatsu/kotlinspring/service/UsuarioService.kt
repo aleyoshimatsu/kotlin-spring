@@ -1,26 +1,15 @@
 package dev.alexandreyoshimatsu.kotlinspring.service
 
-import dev.alexandreyoshimatsu.kotlinspring.model.Curso
 import dev.alexandreyoshimatsu.kotlinspring.model.Usuario
+import dev.alexandreyoshimatsu.kotlinspring.repository.UsuarioRepository
+import javassist.NotFoundException
 import org.springframework.stereotype.Service
-import java.util.*
 
 @Service
-class UsuarioService (var usuarios: List<Usuario>) {
-
-    init {
-        val usuario = Usuario(
-                id = 1,
-                nome = "Ana da Silva",
-                email = "ana@email.com.br"
-        )
-        usuarios = Arrays.asList(usuario)
-    }
+class UsuarioService(private val usuarioRepository: UsuarioRepository, private val notFoundMessage: String = "Usuário nao encontrado!") {
 
     fun buscarPorId(id: Long): Usuario {
-        return usuarios.stream().filter({
-            c -> c.id == id
-        }).findFirst().get()
+        return usuarioRepository.findById(id).orElseThrow({ NotFoundException(notFoundMessage) })
     }
 
 

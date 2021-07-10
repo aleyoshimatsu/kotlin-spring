@@ -1,26 +1,14 @@
 package dev.alexandreyoshimatsu.kotlinspring.service
 
+import dev.alexandreyoshimatsu.kotlinspring.exception.NotFoundException
 import dev.alexandreyoshimatsu.kotlinspring.model.Curso
+import dev.alexandreyoshimatsu.kotlinspring.repository.CursoRepository
 import org.springframework.stereotype.Service
-import java.util.*
 
 @Service
-class CursoService(var cursos: List<Curso>) {
+class CursoService private constructor(private val cursoRepository: CursoRepository, val notFoundMessage: String = "Curso não encontrado") {
 
-    init {
-        val curso = Curso(
-                id = 1,
-                nome = "Kotlin",
-                categoria = "Programacao"
-        )
-        cursos = Arrays.asList(curso)
-    }
-
-    fun buscarPorId(id: Long): Curso {
-        return cursos.stream().filter({
-            c -> c.id == id
-        }).findFirst().get()
-    }
-
+    fun buscarPorId(id: Long): Curso
+        = cursoRepository.findById(id).orElseThrow{NotFoundException(notFoundMessage)}
 
 }
